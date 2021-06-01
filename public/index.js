@@ -1,53 +1,62 @@
-var fileList = [];
+var fileList = []
+const urlParams = new URLSearchParams(window.location.search)
+const userId = urlParams.get('userid')
+var tbody = fileListDisplay.getElementsByTagName('tbody')[0]
 
 inputFiles.addEventListener('change', function () {
     fileList = [];
     for (var i = 0; i < inputFiles.files.length; i++) {
-        fileList.push(inputFiles.files[i]);
+        fileList.push(inputFiles.files[i])
     }
-    renderFileList();
+    renderFileList()
 });
 
 formUpload.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    let response = await fetch('/upload?userid=vvatel22', {
+    let response = await fetch('/upload?userid=' + userId, {
         method: 'POST',
         body: new FormData(formUpload)
     });
 
-    let result = await response.json();
+    let result = await response.json()
 
-    alert(result.message);
-    })
+    alert(result.message)
+    cleanRenderedList()
+})
 
 
 renderFileList = function () {
-    fileListDisplay.innerHTML = '';
-    submitButton.style.display = "none";
-
+    cleanRenderedList()
+    
     fileList.forEach(function (file, index) {
-        var fileDisplayEl = document.createElement('li');
-        fileDisplayEl.innerHTML = (index + 1) + ': ' + file.name;
-        fileListDisplay.appendChild(fileDisplayEl);
-    });
+        var row = tbody.insertRow()
+        var cellFile = row.insertCell()
+        var cellSize = row.insertCell()
+        var cellType = row.insertCell()
+
+        cellFile.innerHTML = file.name
+        cellSize.innerHTML = humanFileSize(file.size)
+        cellType.innerHTML = file.type
+    })
 
     if (fileList.length > 0) {
-        submitButton.style.display = "block";
+        showRenderedList()
     }
-};
-
-function handleSubmit(acceptedFiles) {
-    const data = new FormData();
-
-    for (const file of acceptedFiles) {
-        data.append('files[]', file, file.name);
-    }
-
-    console.log(data.getAll("files"))
-
-    return fetch('/upload?userid=vvatel22', {
-        method: 'POST',
-        body: data,      
-    });
 }
+
+cleanRenderedList = function () {
+    tbody.innerHTML = ""
+    submitButton.classList.add('is-hidden')
+    fileListDisplay.classList.add('is-hidden')
+}
+
+showRenderedList = function() {
+    submitButton.classList.remove('is-hidden')
+    fileListDisplay.classList.remove('is-hidden')
+}
+
+humanFileSize = function (size) {
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+};

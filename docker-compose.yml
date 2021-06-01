@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8118:8080"
+    restart: unless-stopped
+    environment:
+      TARGET_FOLDER: "/upload"
+      AUTHORIZED_USERID: ""
+      GOTIFY_URL: ""
+      GOTIFY_TOKEN: ""
+      GIN_MODE: "release"
+    volumes:
+      - ./upload:/upload
