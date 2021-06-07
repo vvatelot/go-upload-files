@@ -13,6 +13,7 @@ inputFiles.addEventListener('change', function () {
 
 formUpload.addEventListener("submit", async (e) => {
     e.preventDefault();
+    progressBar.value = 0
     progressBar.classList.remove('is-hidden')
 
     var formData = new FormData(formUpload)
