@@ -6,11 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Envoi de fichiers</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
 
 <body>
     <section class="section">
         <div class="container">
+            <div id="modal" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="content" id="responseMessage">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="modal-close is-large" aria-label="close"></button>
+            </div>
+
             <form id="formUpload">
                 <div class="block">
                     <div class="file is-large is-boxed is-centered">
@@ -39,8 +56,10 @@
                 <div class="buttons is-centered">
                     <input class="button is-primary is-large is-hidden" id="submitButton" type="submit" value="Envoyer">
                 </div>
-        </div>
-        </form>
+            </form>
+
+            <progress id="progressBar" class="progress is-large" value="0" max="100"></progress>
+
         </div>
     </section>
 

@@ -13,15 +13,25 @@ inputFiles.addEventListener('change', function () {
 
 formUpload.addEventListener("submit", async (e) => {
     e.preventDefault();
+    progressBar.classList.remove('is-hidden')
 
-    let response = await fetch('/upload?userid=' + userId, {
-        method: 'POST',
-        body: new FormData(formUpload)
-    });
+    var formData = new FormData(formUpload)
+    var xhr=new XMLHttpRequest()
+    xhr.open("POST",'/upload?userid=' + userId)
+    xhr.upload.addEventListener('progress', function(e){
+        progressBar.value = Math.ceil(e.loaded/e.total)*100
+    }, false);
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            var jsonResponse = JSON.parse(this.responseText);
+            responseMessage.innerHTML = jsonResponse.message
+            modal.classList.add("is-active")
+            progressBar.classList.add('is-hidden')
+        }
+    };
 
-    let result = await response.json()
+    xhr.send(formData);
 
-    alert(result.message)
     cleanRenderedList()
 })
 
@@ -49,6 +59,7 @@ cleanRenderedList = function () {
     tbody.innerHTML = ""
     submitButton.classList.add('is-hidden')
     fileListDisplay.classList.add('is-hidden')
+    progressBar.classList.add('is-hidden')
 }
 
 showRenderedList = function() {
@@ -60,3 +71,7 @@ humanFileSize = function (size) {
     var i = Math.floor( Math.log(size) / Math.log(1024) );
     return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
+
+closeModal = function() {
+    modal.classList.remove("is-active")
+}
