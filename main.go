@@ -34,7 +34,7 @@ func handleUpload(c *gin.Context) {
 
 	if !checkUserid(userId) {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "Non autorisé",
+			"message": "⛔ Non autorisé",
 		})
 		return
 	}
@@ -42,7 +42,7 @@ func handleUpload(c *gin.Context) {
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": fmt.Sprintf("Erreur de formulaire : %s", err.Error()),
+			"message": fmt.Sprintf("❌ Erreur de formulaire : %s", err.Error()),
 		})
 		return
 	}
@@ -52,7 +52,7 @@ func handleUpload(c *gin.Context) {
 		filename := os.Getenv("TARGET_FOLDER") + filepath.Base(file.Filename)
 		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": fmt.Sprintf("Fichier(s) non envoyé(s) : %s", err.Error()),
+				"message": fmt.Sprintf("❌ Fichier(s) non envoyé(s) : %s", err.Error()),
 			})
 			return
 		}
@@ -60,7 +60,7 @@ func handleUpload(c *gin.Context) {
 
 	sendGotifyNotification(len(files), userId)
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("%d fichier(s) envoyé(s) avec succès", len(files)),
+		"message": fmt.Sprintf("🎉 %d fichier(s) envoyé(s) avec succès", len(files)),
 	})
 }
 

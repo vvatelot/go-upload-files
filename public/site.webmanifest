@@ -1,6 +1,6 @@
 {
     "name": "Envoi de fichiers",
-    "short_name": "Envoi_fichiers",
+    "short_name": "EnvoiFichiers",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

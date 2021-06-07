@@ -11,29 +11,34 @@ inputFiles.addEventListener('change', function () {
     renderFileList()
 });
 
-formUpload.addEventListener("submit", async (e) => {
+formUpload.addEventListener("submit", function(e) {
     e.preventDefault();
-    progressBar.value = 0
-    progressBar.classList.remove('is-hidden')
 
     var formData = new FormData(formUpload)
-    var xhr=new XMLHttpRequest()
-    xhr.open("POST",'/upload?userid=' + userId)
-    xhr.upload.addEventListener('progress', function(e){
-        progressBar.value = Math.ceil(e.loaded/e.total)*100
-    }, false);
-    xhr.onreadystatechange = function() {
+    var client = new XMLHttpRequest()
+
+    client.upload.onloadstart = function(e) {
+        progressBar.value = e.loaded
+        progressBar.max = e.total
+        progressBar.classList.remove('is-hidden')
+    }
+    
+    client.upload.onprogress = function (e) {
+        progressBar.value = e.loaded
+    }
+    
+    client.onreadystatechange = function() {
         if (this.readyState == 4) {
             var jsonResponse = JSON.parse(this.responseText);
             responseMessage.innerHTML = jsonResponse.message
             modal.classList.add("is-active")
-            progressBar.classList.add('is-hidden')
+            cleanRenderedList()
+            
         }
     };
-
-    xhr.send(formData);
-
-    cleanRenderedList()
+    
+    client.open("POST",'/upload?userid=' + userId)
+    client.send(formData)
 })
 
 
