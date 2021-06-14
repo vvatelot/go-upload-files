@@ -13,6 +13,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var authorizedUserIds []string
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -22,6 +24,8 @@ func main() {
 	if os.Getenv("GIN_MODE") == "release" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	authorizedUserIds = strings.Split(os.Getenv("AUTHORIZED_USERID"), ",")
 
 	router := gin.Default()
 	router.Static("/", "./public")
@@ -65,7 +69,6 @@ func handleUpload(c *gin.Context) {
 }
 
 func checkUserid(userId string) bool {
-	authorizedUserIds := strings.Split(os.Getenv("AUTHORIZED_USERID"), ",")
 	for _, auhorizedUserid := range authorizedUserIds {
 		if userId == auhorizedUserid {
 			return true
