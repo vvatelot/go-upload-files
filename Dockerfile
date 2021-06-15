@@ -13,5 +13,6 @@ RUN mkdir /upload
 COPY --from=builder /app/main .
 RUN touch .env
 ADD public public
+ADD templates templates
 EXPOSE 8080
 CMD ["./main"] 
