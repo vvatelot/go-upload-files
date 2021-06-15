@@ -28,9 +28,23 @@ func main() {
 	authorizedUserIds = strings.Split(os.Getenv("AUTHORIZED_USERID"), ",")
 
 	router := gin.Default()
-	router.Static("/", "./public")
+	router.LoadHTMLFiles("templates/index.tmpl", "templates/forbidden.tmpl")
+	router.Static("/public", "./public")
+	router.GET("/", handleHome)
 	router.POST("/upload", handleUpload)
 	router.Run(":8080")
+}
+
+func handleHome(c *gin.Context) {
+	userId := c.Query("userid")
+
+	if !checkUserid(userId) {
+		c.HTML(http.StatusForbidden, "forbidden.tmpl", gin.H{})
+	} else {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"userid": userId,
+		})
+	}
 }
 
 func handleUpload(c *gin.Context) {
