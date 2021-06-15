@@ -42,7 +42,7 @@ func handleHome(c *gin.Context) {
 		c.HTML(http.StatusForbidden, "forbidden.tmpl", gin.H{})
 	} else {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"userid": userId,
+			"userName": getUserName(userId),
 		})
 	}
 }
@@ -101,4 +101,11 @@ func sendGotifyNotification(nbFiles int, userId string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func getUserName(userId string) string {
+	userIdParts := strings.Split(userId, "|")
+	userName := userIdParts[0]
+
+	return strings.Replace(userName, "_", " ", -1)
 }

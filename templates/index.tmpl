@@ -15,6 +15,9 @@
 <body>
     <section class="section">
         <div class="container">
+            <div class="content has-text-centered">
+                <h1 class="title">Salut {{.userName}}</h1>
+            </div>
             <div id="modal" class="modal">
                 <div class="modal-background"></div>
                 <div class="modal-content">
@@ -27,7 +30,6 @@
                 </div>
                 <button onclick="closeModal()" class="modal-close is-large" aria-label="close"></button>
             </div>
-
             <form id="formUpload">
                 <div class="block">
                     <div class="file is-large is-boxed is-centered">
