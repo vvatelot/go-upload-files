@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -67,7 +68,7 @@ func handleUpload(c *gin.Context) {
 	files := form.File["files"]
 
 	for _, file := range files {
-		filename := os.Getenv("TARGET_FOLDER") + filepath.Base(file.Filename)
+		filename := fmt.Sprintf("%s%s %s%s", os.Getenv("TARGET_FOLDER"), getUserName(userId), time.Now().String(), filepath.Ext(file.Filename))
 		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": fmt.Sprintf("❌ Fichier(s) non envoyé(s) : %s", err.Error()),
