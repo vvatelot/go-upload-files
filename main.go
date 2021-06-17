@@ -65,10 +65,12 @@ func handleUpload(c *gin.Context) {
 		})
 		return
 	}
+
+	userName := getUserName(userId)
 	files := form.File["files"]
 
 	for _, file := range files {
-		filename := fmt.Sprintf("%s%s %s%s", os.Getenv("TARGET_FOLDER"), getUserName(userId), time.Now().String(), filepath.Ext(file.Filename))
+		filename := fmt.Sprintf("%s%s %s%s", os.Getenv("TARGET_FOLDER"), userName, time.Now().String(), filepath.Ext(file.Filename))
 		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": fmt.Sprintf("❌ Fichier(s) non envoyé(s) : %s", err.Error()),
@@ -77,7 +79,7 @@ func handleUpload(c *gin.Context) {
 		}
 	}
 
-	sendGotifyNotification(len(files), userId)
+	sendGotifyNotification(len(files), userName)
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("🎉 %d fichier(s) envoyé(s) avec succès", len(files)),
 	})
@@ -92,10 +94,10 @@ func checkUserid(userId string) bool {
 	return false
 }
 
-func sendGotifyNotification(nbFiles int, userId string) {
+func sendGotifyNotification(nbFiles int, userName string) {
 	formData := url.Values{
 		"title":   {"Nouveaux fichiers sur le serveur"},
-		"message": {fmt.Sprintf("%d fichiers ont été envoyés par %s", nbFiles, userId)},
+		"message": {fmt.Sprintf("%d fichiers ont été envoyés par %s", nbFiles, userName)},
 	}
 
 	_, err := http.PostForm(os.Getenv("GOTIFY_URL")+"/message?token="+os.Getenv("GOTIFY_TOKEN"), formData)
