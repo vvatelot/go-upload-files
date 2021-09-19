@@ -70,7 +70,8 @@ func handleUpload(c *gin.Context) {
 	files := form.File["files"]
 
 	for _, file := range files {
-		filename := fmt.Sprintf("%s%s %s%s", os.Getenv("TARGET_FOLDER"), userName, time.Now().String(), filepath.Ext(file.Filename))
+		t := time.Now()
+		filename := fmt.Sprintf("%s%s-%d-%02d-%02dT%02d:%02d:%02d:%d%s", os.Getenv("TARGET_FOLDER"), userName, t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), filepath.Ext(file.Filename))
 		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": fmt.Sprintf("❌ Fichier(s) non envoyé(s) : %s", err.Error()),
