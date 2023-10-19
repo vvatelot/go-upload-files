@@ -1,3 +1,4 @@
 upload/*
 !upload/.gitkeep
 .env
+tmp
